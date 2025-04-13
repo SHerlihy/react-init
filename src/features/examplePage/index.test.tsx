@@ -1,16 +1,16 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import App from './App';
+import ExamplePage from './index';
 
 describe('App', () => {
     it('renders the App component', () => {
-        render(<App />)
+        render(<ExamplePage />)
         screen.debug();
     })
 
     it('tab navigate to count button', async () => {
-        render(<App />)
+        render(<ExamplePage />)
         const user = userEvent.setup()
 
         const countButton = await screen.findByText(/count is \d+/)
@@ -23,7 +23,7 @@ describe('App', () => {
     })
 
     it('press enter on count button', async () => {
-        render(<App />)
+        render(<ExamplePage />)
         const user = userEvent.setup()
 
         const countButton = await screen.findByText(/count is 0/)
