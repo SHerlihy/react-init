@@ -22,6 +22,21 @@ describe('App', () => {
         expect(document.activeElement).toBe(countButton)
     })
 
+it('click on count button', async ()=>{
+        render(<ExamplePage />)
+        const user = userEvent.setup()
+
+        const countButton = await screen.findByText(/count is 0/)
+        within(countButton).getByText("count is 0")
+
+        let clickCount = 0
+        while (clickCount < 13) {
+            await user.click(countButton)
+            clickCount++
+            within(countButton).getByText(`count is ${clickCount}`)
+        }
+})
+
     it('press enter on count button', async () => {
         render(<ExamplePage />)
         const user = userEvent.setup()
@@ -33,8 +48,11 @@ describe('App', () => {
             await user.tab()
         }
 
-        await user.keyboard('{Enter}')
-
-        within(countButton).getByText("count is 1")
+        let clickCount = 0
+        while (clickCount < 13) {
+            await user.keyboard('{Enter}')
+            clickCount++
+            within(countButton).getByText(`count is ${clickCount}`)
+        }
     })
 })
