@@ -9,7 +9,7 @@ function ExamplePage() {
     const [count, setCount] = useState(0)
 
     return (
-        <>
+        <section>
             <div className='flex justify-center'>
                 <a href="https://react.dev" target="_blank">
                     <img src={reactLogo} className="logo react" alt="React logo" />
@@ -30,7 +30,7 @@ function ExamplePage() {
             <p className="read-the-docs">
                 Click on the Vite and React logos to learn more
             </p>
-        </>
+        </section>
     )
 }
 
