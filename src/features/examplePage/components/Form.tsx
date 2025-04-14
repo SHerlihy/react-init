@@ -26,42 +26,68 @@ const BASE_URL = "https://pokeapi.co/api/v2/berry/"
 
 const queryClient = new QueryClient()
 
+type GetBerryWeight = (url: string) => Promise<number>
+
+const getBerryWeight: GetBerryWeight = async (getUrl: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const berryRes = await fetch(getUrl).then((res) =>
+        res.json(),
+    ) as BerryRes
+
+    return berryRes.size
+}
+
 function Form() {
     return (
         <QueryClientProvider client={queryClient}>
-            <BerryWeightForm />
+            <BerryForm />
         </QueryClientProvider>
     )
 }
 
-function BerryWeightForm() {
+function BerryForm() {
     const mutation = useMutation({
-        mutationFn: async (getUrl: string) => {
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-            const berryRes = await fetch(getUrl).then((res) =>
-                res.json(),
-            ) as BerryRes
-
-            return berryRes.size
-        },
+        mutationFn: getBerryWeight
     })
+
+    return (
+        <>
+            <BerryWeightFeedback mutation={mutation} />
+            <BerryWeightForm getBerryWeight={mutation.mutateAsync} />
+        </>
+    )
+}
+
+type Mutation = ReturnType<typeof useMutation<number, Error, string>>
+
+function BerryWeightFeedback({ mutation }: { mutation: Mutation }) {
+    return (
+        <>
+            {mutation.isPending && <p>...</p>}
+            {mutation.isSuccess && <p>{mutation.data}</p>}
+            {mutation.isError && <p>{mutation.error.message}</p>}
+        </>
+    )
+}
+
+function BerryWeightForm({ getBerryWeight }: { getBerryWeight: GetBerryWeight }) {
 
     const form = useForm({
         defaultValues: {
             berry: ''
         },
         validators: {
-            onChange: berrySchema
+            onChange: berrySchema,
+            onMount: berrySchema,
         },
         onSubmit: async ({ value }) => {
             const url = `${BASE_URL}${value.berry}`
-            return await mutation.mutateAsync(url)
+            return await getBerryWeight(url)
         }
     })
 
     return (
         <>
-            {mutation.isSuccess && <p>{mutation.data}</p>}
             <form
                 onSubmit={(e) => {
                     e.preventDefault()
