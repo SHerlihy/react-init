@@ -4,12 +4,14 @@ import viteLogo from '/vite.svg'
 import '@features/examplePage/index.css'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import Form from './components/Form'
 
 function ExamplePage() {
     const [count, setCount] = useState(0)
 
     return (
         <section>
+            <Form />
             <div className='flex justify-center'>
                 <a href="https://react.dev" target="_blank">
                     <img src={reactLogo} className="logo react" alt="React logo" />
