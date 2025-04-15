@@ -38,7 +38,11 @@ function BerryWeightForm({
         onSubmit: async ({ value }) => {
             const url = `${BASE_URL}${value.berry}`
 
-            return await getBerryWeight(url)
+            const berryWeightResponse = await getBerryWeight(url)
+
+            setPostSubmitChange(false)
+
+            return berryWeightResponse
         },
     })
 
@@ -52,35 +56,27 @@ function BerryWeightForm({
                 onSubmit={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    setPostSubmitChange(false)
                     form.handleSubmit()
                 }}
                 onChange={() => { setPostSubmitChange(true) }}
             >
-                <form.Subscribe
-                    selector={(state) => [state.isSubmitting]}
-                    children={([isSubmitting]) => (
-                        <form.Field
-                            name="berry"
-                            children={(field) => (
-                                <>
-                                    <Input
-                                        disabled={isSubmitting}
-                                        name={field.name}
-                                        value={field.state.value}
-                                        type='text'
-                                        onChange={(e) => field.handleChange(e.target.value)}
-                                    />
-                                    <p>
-                                    {field.state.meta.errorMap.onChange?.length ? (
-                                        field.state.meta.errorMap.onChange.map((fErr) => (fErr.message))) : <>&nbsp;</>
-                                    }
-                                    </p>
-                                </>
-                            )}
-                        />
-                    )
-                    }
+                <form.Field
+                    name="berry"
+                    children={(field) => (
+                        <>
+                            <Input
+                                name={field.name}
+                                value={field.state.value}
+                                type='text'
+                                onChange={(e) => field.handleChange(e.target.value)}
+                            />
+                            <p>
+                                {field.state.meta.errorMap.onChange?.length ? (
+                                    field.state.meta.errorMap.onChange.map((fErr) => (fErr.message))) : <>&nbsp;</>
+                                }
+                            </p>
+                        </>
+                    )}
                 />
                 <form.Subscribe
                     selector={(state) => [state.canSubmit, state.isSubmitting]}
