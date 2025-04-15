@@ -10,13 +10,24 @@ import { useRef } from 'react'
 
 const queryClient = new QueryClient()
 
+const controller = new AbortController()
+
 export type GetBerryWeight = (url: string) => Promise<string>
 
 const getBerryWeight: GetBerryWeight = async (getUrl: string) => {
+    const minTimeout = new Promise((resolve, reject) => {
+        controller.signal.addEventListener(
+            'abort',
+            () => { reject() }
+        )
+
+        setTimeout(resolve, 3000)
+    })
+
     const [error, allSettledRes] = await catchError(
         Promise.allSettled([
-            catchError(new Promise((resolve) => setTimeout(resolve, 3000))),
-            handleGET(getUrl)
+            catchError(minTimeout),
+            handleGET(getUrl, controller.signal)
         ])
     )
 
@@ -68,10 +79,15 @@ function BerryForm() {
         mutationFn: handleGetBerryWeight
     })
 
+    const handleFormReset = () => {
+        mutation.reset()
+        controller.abort()
+    }
+
     return (
         <>
             <BerryWeightFeedback mutation={mutation} ref={feedbackRef} />
-            <BerryWeightForm getBerryWeight={mutation.mutateAsync} resetResponseError={() => { mutation.reset() }} isResponseError={mutation.isError} />
+            <BerryWeightForm getBerryWeight={mutation.mutateAsync} handleFormReset={handleFormReset} isResponseError={mutation.isError} />
         </>
     )
 }

@@ -18,11 +18,11 @@ const berrySchema = z.object({
 
 function BerryWeightForm({
     getBerryWeight,
-    resetResponseError,
+    handleFormReset,
     isResponseError
 }: {
     getBerryWeight: GetBerryWeight,
-    resetResponseError: () => void,
+    handleFormReset: () => void,
     isResponseError: boolean
 }) {
     const [postSubmitChange, setPostSubmitChange] = useState(false)
@@ -43,7 +43,7 @@ function BerryWeightForm({
     })
 
     useEffect(() => {
-        resetResponseError()
+        handleFormReset()
     }, [isResponseError && postSubmitChange])
 
     return (
@@ -91,7 +91,7 @@ function BerryWeightForm({
                             </Button>
                             <Button type="reset" onClick={() => {
                                 form.reset()
-                                resetResponseError()
+                                handleFormReset()
                             }}>
                                 Reset
                             </Button>
