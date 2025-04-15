@@ -6,6 +6,7 @@ import {
 import BerryWeightFeedback from './BerryWeightFeedback'
 import BerryWeightForm from './BerryWeightForm'
 import { allSettledToCatchError, catchError, handleGET } from '@/lib/async'
+import { useRef } from 'react'
 
 const queryClient = new QueryClient()
 
@@ -51,13 +52,25 @@ function Form() {
 }
 
 function BerryForm() {
+    const feedbackRef = useRef<null | HTMLParagraphElement>(null)
+
+    const handleGetBerryWeight: GetBerryWeight = async (url) => {
+        const response = await getBerryWeight(url)
+
+        if (feedbackRef.current) {
+            feedbackRef.current.scrollIntoView()
+        }
+
+        return response
+    }
+
     const mutation = useMutation({
-        mutationFn: getBerryWeight
+        mutationFn: handleGetBerryWeight
     })
 
     return (
         <>
-            <BerryWeightFeedback mutation={mutation} />
+            <BerryWeightFeedback mutation={mutation} ref={feedbackRef} />
             <BerryWeightForm getBerryWeight={mutation.mutateAsync} resetResponseError={() => { mutation.reset() }} isResponseError={mutation.isError} />
         </>
     )
