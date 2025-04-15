@@ -1,11 +1,12 @@
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
-import { GetBerryWeight } from './Form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
+import { GetBerryWeight } from './getBerryWeight'
+import Field from './Field'
 
-const BASE_URL = "https://pokeapi.co/api/v2//"
+const BASE_URL = "https://pokeapi.co/api/v2/berry/"
 
 const berryTuple = ["cheri", "chesto", "pecha"] as const
 const inputValidationError = `Input must match ${berryTuple.join(" | ")}`
@@ -26,6 +27,7 @@ function BerryWeightForm({
     isResponseError: boolean,
 }) {
     const [postSubmitChange, setPostSubmitChange] = useState(false)
+
     const form = useForm({
         defaultValues: {
             berry: ''
@@ -71,19 +73,16 @@ function BerryWeightForm({
                 <form.Field
                     name="berry"
                     children={(field) => (
-                        <>
+                        <Field
+                            errors={field.state.meta.errorMap.onChange}
+                        >
                             <Input
                                 name={field.name}
                                 value={field.state.value}
                                 type='text'
                                 onChange={(e) => field.handleChange(e.target.value)}
                             />
-                            <p>
-                                {field.state.meta.errorMap.onChange?.length ? (
-                                    field.state.meta.errorMap.onChange.map((fErr) => (fErr.message))) : <>&nbsp;</>
-                                }
-                            </p>
-                        </>
+                        </Field>
                     )}
                 />
                 <form.Subscribe
