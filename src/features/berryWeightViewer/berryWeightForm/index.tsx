@@ -5,7 +5,7 @@ import { GetBerryWeight } from './getBerryWeight'
 import Field from './Field'
 import FormButtons from './FormButtons'
 
-const BASE_URL = "https://pokeapi.co/api/v2//"
+const BASE_URL = "https://pokeapi.co/api/v2/berry/"
 
 const berryTuple = ["cheri", "chesto", "pecha"] as const
 const inputValidationError = `Input must match ${berryTuple.join(" | ")}`
@@ -18,11 +18,11 @@ const berrySchema = z.object({
 
 function BerryWeightForm({
     getBerryWeight,
-    handleFormReset,
+    handleFormActionReset,
     isResponseError,
 }: {
     getBerryWeight: GetBerryWeight,
-    handleFormReset: () => void,
+    handleFormActionReset: () => void,
     isResponseError: boolean,
 }) {
     const form = useForm({
@@ -42,9 +42,9 @@ function BerryWeightForm({
         },
     })
 
-    const handleReset = () => {
+    const handleFormReset = () => {
         form.reset()
-        handleFormReset()
+        handleFormActionReset()
     }
 
     return (
@@ -60,10 +60,9 @@ function BerryWeightForm({
                     e.stopPropagation()
 
                     if (isResponseError) {
-                        handleFormReset()
+                        handleFormActionReset()
                     }
-                }
-                }
+                }}
             >
                 <form.Field
                     name="berry"
@@ -86,7 +85,7 @@ function BerryWeightForm({
                         <FormButtons
                             canSubmit={canSubmit}
                             isSubmitting={isSubmitting}
-                            handleReset={handleReset}
+                            handleReset={handleFormReset}
                         />}
                 />
             </form >

@@ -4,21 +4,21 @@ import {
     useMutation,
 } from '@tanstack/react-query'
 import BerryWeightFeedback from './BerryWeightFeedback'
-import BerryWeightForm from './BerryWeightForm'
 import { useRef } from 'react'
 import { berryWeightController, getBerryWeight, GetBerryWeight } from './getBerryWeight'
+import BerryWeightForm from './berryWeightForm'
 
 const queryClient = new QueryClient()
 
-function Form() {
+function BerryWeightViewer() {
     return (
         <QueryClientProvider client={queryClient}>
-            <BerryForm />
+            <BerryWeightController />
         </QueryClientProvider>
     )
 }
 
-function BerryForm() {
+function BerryWeightController() {
     const feedbackRef = useRef<null | HTMLParagraphElement>(null)
 
     const handleGetBerryWeight: GetBerryWeight = async (url) => {
@@ -35,7 +35,7 @@ function BerryForm() {
         mutationFn: handleGetBerryWeight
     })
 
-    const handleFormReset = () => {
+    const handleFormActionReset = () => {
         mutation.reset()
         berryWeightController?.abort()
     }
@@ -43,9 +43,9 @@ function BerryForm() {
     return (
         <>
             <BerryWeightFeedback mutation={mutation} ref={feedbackRef} />
-            <BerryWeightForm getBerryWeight={mutation.mutateAsync} handleFormReset={handleFormReset} isResponseError={mutation.isError} />
+            <BerryWeightForm getBerryWeight={mutation.mutateAsync} handleFormActionReset={handleFormActionReset} isResponseError={mutation.isError} />
         </>
     )
 }
 
-export default Form
+export default BerryWeightViewer
