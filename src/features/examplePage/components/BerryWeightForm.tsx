@@ -71,9 +71,11 @@ function BerryWeightForm({
                                         type='text'
                                         onChange={(e) => field.handleChange(e.target.value)}
                                     />
-                                    {field.state.meta.errorMap.onChange?.length && (
-                                        field.state.meta.errorMap.onChange.map((fErr) => (<p>{fErr.message}</p>)))
+                                    <p>
+                                    {field.state.meta.errorMap.onChange?.length ? (
+                                        field.state.meta.errorMap.onChange.map((fErr) => (fErr.message))) : <>&nbsp;</>
                                     }
+                                    </p>
                                 </>
                             )}
                         />
