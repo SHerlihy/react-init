@@ -10,13 +10,14 @@ import { useRef } from 'react'
 
 const queryClient = new QueryClient()
 
-const controller = new AbortController()
+let controller: AbortController;
 
 export type GetBerryWeight = (url: string) => Promise<string>
 
 const getBerryWeight: GetBerryWeight = async (getUrl: string) => {
+    controller = new AbortController()
     const minTimeout = new Promise((resolve, reject) => {
-        controller.signal.addEventListener(
+        controller!.signal.addEventListener(
             'abort',
             () => { reject() }
         )
@@ -32,7 +33,7 @@ const getBerryWeight: GetBerryWeight = async (getUrl: string) => {
     )
 
     if (error) {
-        return error.message
+        return Promise.reject(error)
     }
 
     const allRes = allSettledToCatchError(allSettledRes)
@@ -42,16 +43,16 @@ const getBerryWeight: GetBerryWeight = async (getUrl: string) => {
     const [delayErr, _] = delay
 
     if (delayErr) {
-        return delayErr.message
+        return Promise.reject(delayErr)
     }
 
     const [getErr, getResponse] = getResolve
 
     if (getErr) {
-        return getErr.message
+        return Promise.reject(getErr)
     }
 
-    return getResponse.size
+    return Promise.resolve(getResponse.size)
 }
 
 function Form() {
@@ -81,7 +82,7 @@ function BerryForm() {
 
     const handleFormReset = () => {
         mutation.reset()
-        controller.abort()
+        controller?.abort()
     }
 
     return (
