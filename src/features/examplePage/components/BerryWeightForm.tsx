@@ -1,12 +1,11 @@
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { useEffect, useState } from 'react'
 import { GetBerryWeight } from './getBerryWeight'
 import Field from './Field'
+import FormButtons from './FormButtons'
 
-const BASE_URL = "https://pokeapi.co/api/v2/berry/"
+const BASE_URL = "https://pokeapi.co/api/v2//"
 
 const berryTuple = ["cheri", "chesto", "pecha"] as const
 const inputValidationError = `Input must match ${berryTuple.join(" | ")}`
@@ -26,8 +25,6 @@ function BerryWeightForm({
     handleFormReset: () => void,
     isResponseError: boolean,
 }) {
-    const [postSubmitChange, setPostSubmitChange] = useState(false)
-
     const form = useForm({
         defaultValues: {
             berry: ''
@@ -41,16 +38,14 @@ function BerryWeightForm({
 
             const berryWeightResponse = await getBerryWeight(url)
 
-            setPostSubmitChange(false)
-
             return berryWeightResponse
         },
     })
 
-    useEffect(() => {
+    const handleReset = () => {
+        form.reset()
         handleFormReset()
-        setPostSubmitChange(false)
-    }, [isResponseError && postSubmitChange])
+    }
 
     return (
         <>
@@ -65,7 +60,7 @@ function BerryWeightForm({
                     e.stopPropagation()
 
                     if (isResponseError) {
-                        setPostSubmitChange(true)
+                        handleFormReset()
                     }
                 }
                 }
@@ -87,20 +82,12 @@ function BerryWeightForm({
                 />
                 <form.Subscribe
                     selector={(state) => [state.canSubmit, state.isSubmitting]}
-                    children={([canSubmit, isSubmitting]) => (
-                        <>
-                            <Button type="submit" disabled={!canSubmit}>
-                                {isSubmitting ? '...' : 'Submit'}
-                            </Button>
-                            <Button type="reset" onClick={() => {
-                                form.reset()
-                                handleFormReset()
-                            }}>
-                                Reset
-                            </Button>
-                        </>
-                    )
-                    }
+                    children={([canSubmit, isSubmitting]) =>
+                        <FormButtons
+                            canSubmit={canSubmit}
+                            isSubmitting={isSubmitting}
+                            handleReset={handleReset}
+                        />}
                 />
             </form >
         </>
