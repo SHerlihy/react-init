@@ -18,3 +18,14 @@ export async function handleGET<TRes = any>(uri: string): Promise<[undefined, TR
     
     return [error, await response.json()]
 }
+
+export function allSettledToCatchError<T>(settled: PromiseSettledResult<[Error] | [undefined, T]>[]): Array<[undefined, T]| [Error]> {
+        return settled.map((settledRes) => {
+            if (settledRes.status === "rejected") {
+                return [new Error(settledRes.reason.message)]
+            }
+
+            return settledRes.value
+        })
+    }
+

@@ -1,11 +1,11 @@
-import { useForm, useStore } from '@tanstack/react-form'
+import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { GetBerryWeight } from './Form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 
-const BASE_URL = "https://pokeapi.co/api/v2//"
+const BASE_URL = "https://pokeapi.co/api/v2/berry/"
 
 const berryTuple = ["cheri", "chesto", "pecha"] as const
 const inputValidationError = `Input must match ${berryTuple.join(" | ")}`
@@ -43,7 +43,6 @@ function BerryWeightForm({
     })
 
     useEffect(() => {
-        console.log("touched effect fired")
         resetResponseError()
     }, [isResponseError && postSubmitChange])
 

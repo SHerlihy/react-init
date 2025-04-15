@@ -5,21 +5,41 @@ import {
 } from '@tanstack/react-query'
 import BerryWeightFeedback from './BerryWeightFeedback'
 import BerryWeightForm from './BerryWeightForm'
-import { handleGET } from '@/lib/async'
+import { allSettledToCatchError, catchError, handleGET } from '@/lib/async'
 
 const queryClient = new QueryClient()
 
 export type GetBerryWeight = (url: string) => Promise<string>
 
 const getBerryWeight: GetBerryWeight = async (getUrl: string) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    const [error, berryRes] = await handleGET(getUrl)
+    const [error, allSettledRes] = await catchError(
+        Promise.allSettled([
+            catchError(new Promise((resolve) => setTimeout(resolve, 3000))),
+            handleGET(getUrl)
+        ])
+    )
 
     if (error) {
         return error.message
     }
 
-    return berryRes.size
+    const allRes = allSettledToCatchError(allSettledRes)
+
+    const [delay, getResolve] = allRes
+
+    const [delayErr, _] = delay
+
+    if (delayErr) {
+        return delayErr.message
+    }
+
+    const [getErr, getResponse] = getResolve
+
+    if (getErr) {
+        return getErr.message
+    }
+
+    return getResponse.size
 }
 
 function Form() {
@@ -35,15 +55,10 @@ function BerryForm() {
         mutationFn: getBerryWeight
     })
 
-    function resetResponseError() {
-        console.log("reset called")
-        mutation.reset()
-    }
-
     return (
         <>
             <BerryWeightFeedback mutation={mutation} />
-            <BerryWeightForm getBerryWeight={mutation.mutateAsync} resetResponseError={resetResponseError} isResponseError={mutation.isError} />
+            <BerryWeightForm getBerryWeight={mutation.mutateAsync} resetResponseError={() => { mutation.reset() }} isResponseError={mutation.isError} />
         </>
     )
 }
