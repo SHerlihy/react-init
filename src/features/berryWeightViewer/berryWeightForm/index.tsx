@@ -1,9 +1,9 @@
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { Input } from '@/components/ui/input'
-import { GetBerryWeight } from './getBerryWeight'
 import Field from './Field'
 import FormButtons from './FormButtons'
+import { GetBerryWeight } from '@/features/berryWeightViewer/getBerryWeight'
 
 const BASE_URL = "https://pokeapi.co/api/v2/berry/"
 
