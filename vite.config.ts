@@ -27,7 +27,11 @@ export default defineConfig({
         outDir: "./deployment/createLambda/dist",
         emptyOutDir: true,
         rollupOptions: {
-            external: buildExcludeFiles
+            external: buildExcludeFiles,
+            output: {
+                assetFileNames: `[name]-[hash][extname]`,
+                entryFileNames: `[name]-[hash].js`,
+            }
         }
     },
 } as UserConfig)
