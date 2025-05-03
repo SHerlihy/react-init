@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "deployAppLambda": "npm run build && cd ./deployment/createLambda && terraform apply --auto-approve",
+    "deployDestroyLambda": "./scripts/createDestroyProgramme.sh ./deployment/createLambda ./deployment/destroyLambda/runtime/createdConfig",
+    "unstage": "cd ./deployment/createLambda && terraform destroy --auto-approve"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.0",
