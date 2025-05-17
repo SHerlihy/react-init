@@ -3,11 +3,8 @@ const { execSync } = require('child_process')
 const efsPath = "/mnt/efs"
 const createPath = `${efsPath}/create`
 
-//const inBudgetTopicArn=
-//const outBudgetTopicArn=
-
 exports.handler = async (event) => {
-    const efsFiles = execSync("curl -Is http://www.google.com | head -n 1")
+    const efsFiles = execSync(`ls ${createPath}`)
 
     return {
         statusCode: 200,
