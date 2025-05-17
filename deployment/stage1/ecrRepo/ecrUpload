@@ -3,12 +3,14 @@
 ACCESS_KEY="$1"
 SECRET_KEY="$2"
 
+ECR_URI="$3"
+
 aws ecr get-login-password --profile rscadmin | docker login --username AWS --password-stdin 086900566647.dkr.ecr.eu-west-2.amazonaws.com
-docker rmi $(docker images | grep '086900566647.dkr.ecr.eu-west-2.amazonaws.com/lambda-create-lambda:latest')
+docker rmi $(docker images | grep "${ECR_URI}:latest")
 
 docker buildx build --build-arg ACCESS_KEY=${ACCESS_KEY} --build-arg SECRET_KEY=${SECRET_KEY} --platform linux/amd64 --provenance=false -t lambda-create-lambda:latest ./image
-docker tag lambda-create-lambda:latest 086900566647.dkr.ecr.eu-west-2.amazonaws.com/lambda-create-lambda:latest
+docker tag lambda-create-lambda:latest ${ECR_URI}:latest
 
-docker push 086900566647.dkr.ecr.eu-west-2.amazonaws.com/lambda-create-lambda:latest
+docker push ${ECR_URI}:latest
 
 aws ecr get-login-password --profile default | docker login --username AWS --password-stdin 111644099040.dkr.ecr.eu-west-2.amazonaws.com
